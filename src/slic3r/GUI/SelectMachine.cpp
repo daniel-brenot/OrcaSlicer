@@ -2478,12 +2478,13 @@ void SelectMachineDialog::on_ok_btn(wxCommandEvent &event)
         std::string info;
 
         DeviceManager::check_filaments_in_blacklist(filament_brand, filament_type, in_blacklist, action, info);
+        if (!wxGetApp().app_config->get("skip_ams_blacklist_check") != "true") {
+            if (in_blacklist && action == "warning") {
+                wxString prohibited_error = wxString::FromUTF8(info);
 
-        if (in_blacklist && action == "warning") {
-            wxString prohibited_error = wxString::FromUTF8(info);
-
-            confirm_text.push_back(ConfirmBeforeSendInfo(prohibited_error));
-            has_slice_warnings = true;
+                confirm_text.push_back(ConfirmBeforeSendInfo(prohibited_error));
+                has_slice_warnings = true;
+            }
         }
     }
 
